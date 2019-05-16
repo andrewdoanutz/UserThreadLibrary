@@ -1,0 +1,7 @@
+Andrew Doan
+3772365
+CS 170
+
+I added 3 fields to my TCB, a SID (semaphore ID), joinedOn, and joinedBy, in order to tell if a thread is blocked by a semaphore, and to tell what threads it is joined on by and is joining. Most of the work was in the scheduler, as I had to revamp everything to work with status codes. I basically just had my scheduler ignore the threads that had a BLOCK, SBLOCK, ZOMBIE, or DEAD. Instead of deleting the threads right off the linked list when they were done, I also just changed their status to ZOMBIE so the return value could be collected, where it would be changed to DEAD and popped off the linked list. The pthread_join, lock, and unlock functions were also added. Lock and unlock blocked and unblocked the alarm signal. 
+
+The semaphore code basically used a vector to hold all the semaphores, and assigned sem->__align a SID that acted as the index to the vector to get the struct. If a call to wait made a thread sleep, the thread status was changed to SBLOCK, and if a call to post was made, it checked if the semaphore count was 0, and if it was, it checked each thread to see if it was SBLOCKED, and the SID matched, then I unblocked it by setting the status to READY.
